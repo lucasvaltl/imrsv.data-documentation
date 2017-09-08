@@ -100,7 +100,7 @@ The CSV parser is used to handle CSV data. It is based on the [CSV2Table](https:
 | Method    | Description     | 
 | :------------- |:-------------|
 | `public FlatTable Parse(TextAsset csv)`    | Parses a CSV Unity textasset and outputs a FlatTable - used in the Unity Editor|
-| `public FlatTable Parse(string csv)`    | Parses a CSV string and outputs a FlatTable - used in the Unity Editor|
+| `public FlatTable Parse(string csv)`    | Parses a CSV string and outputs a FlatTable|
 
 
 #### JSONToFlatTable Class
@@ -111,7 +111,7 @@ The JSON parser is used to handle JSON data. It is based on the [JSOBObject](htt
 | Method    | Description     | 
 | :------------- |:-------------|
 | `public FlatTable Parse(TextAsset json)`    | Parses a JSON Unity textasset and outputs a FlatTable - used in the Unity Editor|
-| `public FlatTable Parse(string json)`    | Parses a JSON string and outputs a FlatTable - used in the Unity Editor|
+| `public FlatTable Parse(string json)`    | Parses a JSON string and outputs a FlatTable|
 
 ### Data Storage
 
