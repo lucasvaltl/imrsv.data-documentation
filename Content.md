@@ -10,6 +10,14 @@ The app was made to be self-explanatory, however here are some tips to get you s
 
 **Important:** The app is only useable if you have a filepicker installed on your Hololens. [OneDrive](https://www.microsoft.com/en-gb/store/p/onedrive/9wzdncrfj1p3?wa=wsignin1.0) is a great choice.
 
+### Accepted File Formats
+
+Missing data values should be left empty. The following file formats are accepted:
+- CSV: files using commas as separators will work. Do not use an index. The first line defines the column names and hence needs to consist of strings. [Here](https://1drv.ms/u/s!ArSq-hTe1BlYgQtmPZfea8iSWcj-) is an example.
+- JSON: the file needs to be formatted as follows: one key/value pair per data column/dimension containing the column name as the key and an array of data as the value. All dimensions/columns need to have the same length and the values need to be of the same type. [Here](https://1drv.ms/u/s!ArSq-hTe1BlYgQ0YYcdVFaJA97SW) is an example. 
+
+Side note: Files exported using the pandas [`pandas.DataFrame.to_json`](https://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.to_json.html) method without any parameters should work fine. 
+
 ### Application Start
 The application welcomes you with a screen that prompts you to load a file. Upon pressing the load file button, the app will switch to the file picker installed on your device. Choose the file you want to load and press "open".
 
