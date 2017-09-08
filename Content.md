@@ -48,13 +48,12 @@ To change the data you are visualising, just press the `Load Data` button at the
 
 At the time of writing, the application is not yet available in the Windows App Store. Therefore, the application needs to be built and deployed on the Hololens device manually. To do so you will need to install the following development tools:
 
-- Unity: 
-- Visual Studio: 
+- Unity: For development version [2017.1p5](https://unity3d.com/unity/qa/patch-releases/2017.1.0p5) was used
+- Visual Studio: For development version 15.3.3 was used
 
+In order to build the app and run it on the Hololens, the following steps need to be followed:
 
-The following steps need to be followed:
-
-1. First, the Unity project needs to be loaded using Unity. The Unity version used for this project was [Unity 2017.1b2](). Open the project using the "open project" function in Unity and navigate to the folder where it is stored. 
+1. First, the Unity project needs to be loaded using Unity. The Unity version used for this project was [Unity 2017.1p5](https://unity3d.com/unity/qa/patch-releases/2017.1.0p5). Open the project using the "open project" function in Unity and navigate to the folder where it is stored. 
 2. Then the application needs to be built and deployed to the device. Just follow the steps outlined [here](https://developer.microsoft.com/en-us/windows/mixed-reality/holograms_100#compile_the_visual_studio_solution). Make sure Unity is set up correctly as detailed by the guide.
  
 
