@@ -23,22 +23,28 @@ You can now manipulate the dimensions being displayed using the UI that was crea
 
 - The leftmost section controls how your data is grouped. The data will be grouped along this dimension - think of it like the x axis of your graph.
 - The middle section allows you to add a sub-grouping category. Each group created will be sub-grouped using this dimension. Sub-groups are displayed as tip-tools when gazing at a data point. 
-- The rightmost seciton allows you to select the dimensions that are displayed. You can chose which dimensions are displayed and how they are aggregated by clicking the `Count`, `Sum` and `Avg` buttons. Pressing any button visualises the corresponding dimension, and pressing it again deletes said dimension from the visualisation. 
+- The rightmost section allows you to select the dimensions that are displayed. You can choose which dimensions are displayed and how they are aggregated by clicking the `Count`, `Sum` and `Avg` buttons. Pressing any button visualises the corresponding dimension, and pressing it again deletes said dimension from the visualisation. 
 
 Use these buttons to change how and which data is being displayed - then walk around the graph to see it from different angles. This will hopefully allow you to understand the data better and find new patterns between different dimensions.
 
 ### Changing The Data Loaded
 
-To change the data you are visualising, just press the `Load Data` button at the top of the UI panel. The app will switch to your file picker and you can select a different data set tio visualise. 
+To change the data you are visualising, just press the `Load Data` button at the top of the UI panel. The app will switch to your file picker and you can select a different data set to visualise. 
 
 
 ## Deployment Manual
 
 ### Application Building / Deployment
 
-At the time of writing, the application is not yet available in the Windows App Store. Therefore, the application needs to be built and deployed on the Hololens device manually. The following steps need to be followed:
+At the time of writing, the application is not yet available in the Windows App Store. Therefore, the application needs to be built and deployed on the Hololens device manually. To do so you will need to install the following development tools:
 
-1. First the Unity project needs to be loaded using Unity. The Unity version used for this proejct was [Unity 2017.1f3]()
+- Unity: 
+- Visual Studio: 
+
+
+The following steps need to be followed:
+
+1. First, the Unity project needs to be loaded using Unity. The Unity version used for this project was [Unity 2017.1b2](). Open the project using the "open project" function in Unity and navigate to the folder where it is stored. 
 2. Then the application needs to be built and deployed to the device. Just follow the steps outlined [here](https://developer.microsoft.com/en-us/windows/mixed-reality/holograms_100#compile_the_visual_studio_solution). Make sure Unity is set up correctly as detailed by the guide.
  
 
@@ -54,7 +60,7 @@ The rest of the application was entirely self-written - and as such is not depen
 
 ## Documentation
 
-This documentation is intended at developers who want to extend the application or are just curios as to how it works. The application can be easily extended by plugging new classes into the existing infrastructure in order to extend the apps functionalities. 
+This documentation is intended dor developers who want to extend the application or are just curious as to how it works. The application can be easily extended by plugging new classes into the existing infrastructure in order to extend the app's functionalities. 
 
 ### App Manager
 
@@ -72,25 +78,40 @@ Further, new data importation options could be created that stream data via an A
 #### CSVToFlatTable Class
 The CSV parser is used to handle CSV data. It is based on the [CSV2Table](https://www.assetstore.unity3d.com/en/#!/content/36443) parser by Yoon ChangSik. The parser was adapted to add data into a FlatTable instance on a per column basis. The resulting FlatTable then serves as the output of the parser. 
 
+**Methods:**
+
+| Method    | Description     | 
+| :------------- |:-------------|
+| `public FlatTable Parse(TextAsset csv)`    | Parses a CSV Unity textasset and outputs a FlatTable - used in the Unity Editor|
+| `public FlatTable Parse(string csv)`    | Parses a CSV string and outputs a FlatTable - used in the Unity Editor|
+
+
 #### JSONToFlatTable Class
-The JSON parser is used to handle JSON data. It is based on the [JSOBObject](https://github.com/mtschoen/JSONObject/blob/master/JSONObject.cs) class by Matt Shoen (used under MIT License). The JSON parser behaves similarly to the CSV parser by adding data to a column, then adding the column to a FlatTable and finally outputting said FlatTable.
+The JSON parser is used to handle JSON data. It is based on the [JSOBObject](https://github.com/mtschoen/JSONObject/blob/master/JSONObject.cs) class by Matt Shoen (used under MIT License). The JSON parser behaves similarly to the CSV parser by adding data to a column, adding each column to a FlatTable and finally outputting said FlatTable.
+
+**Methods:**
+
+| Method    | Description     | 
+| :------------- |:-------------|
+| `public FlatTable Parse(TextAsset json)`    | Parses a JSON Unity textasset and outputs a FlatTable - used in the Unity Editor|
+| `public FlatTable Parse(string json)`    | Parses a JSON string and outputs a FlatTable - used in the Unity Editor|
 
 ### Data Storage
 
 #### Column Class
 
-Individual data is grouped is stored in a column. The column contains two lists: a list to store the actual data (`ColumnData`), and a dictionary that stores the unique values in each column together with a list of indexes (ints) that document their occurences (`DataDistribution`). This DataDistribution field is used for grouping of columns. 
+Individual data is grouped is stored in a column. The column contains two lists: a list to store the actual data (`ColumnData`), and a dictionary that stores the unique values in each column together with a list of indexes (ints) that document their occurence in the data (`DataDistribution`). This DataDistribution field is used for grouping of columns. 
 
-The column instantiator takes a list of objects as an input. This list is then used to build the column by extracting the column name out of the first item of the list, and then adding each of the following item to the `ColumnData`list as well as the `DataDistribution` list. 
+The column instantiator takes a list of objects as an input. This list is then used to build the column by extracting the column name out of the first item of the list, and then adding each of the following items to the `ColumnData`list as well as the `DataDistribution` list. 
 
-The column class acts as a sub-class to the FlatTable class, described below. 
+The column class acts as a sub-class of the FlatTable class, described below. 
 
 **Attributes:**
 
 | Attribute     | Description     | 
 | :------------- |:-------------|
 | `Type Dtype`    | Stores the type of the data stored in the column |
-| `List<object> ColumnData`      | Stores the actual data containted in the list      | 
+| `List<object> ColumnData`      | Stores the actual data contained in the list      | 
 | `Single LocalMax` | Stores the highest value in each column (used to facilitate scaling when plotting)|
 
 
@@ -107,7 +128,7 @@ The column class acts as a sub-class to the FlatTable class, described below.
 
 
 #### FlatTable Class
-The FlatTable is the main data storage facility in this application. It acts as an in-memory flat table data structure consisting of individual data columns. It is not only used to persistently store the data loaded into this application, but also temporarily generated groupings created by the `GroupBy`function. Further, it acts as the input to the plottinf function which uses the value in each cell to creat a data point.
+The FlatTable is the main data storage facility in this application. It acts as an in-memory flat table data structure consisting of individual data columns. It is not only used to persistently store the data loaded into this application, but also temporarily generated groupings created by the `GroupBy`function. Further, it acts as the input to the plotting function which uses the value in each cell to create a data point.
 
 **Attributes:**
 
@@ -137,7 +158,7 @@ The FlatTable is the main data storage facility in this application. It acts as 
 
 
 #### Grouper Class
-The static `Grouper`class is the main way this application transforms data. It contains only one method: `GroupBy`. The main usecase of this method is similar to a pivot table: it groups a table along a user defined dimension. The method also allows for sub-grouping each group of data. The main output is a `FlatTable` file, where each cell holds a key value pair: The key is the main data value of the group, and the value is a list of key value pairs that hold the names and values of the subgroups. When the main grouping column consists of a format parseable as `DateTime`, the rows are ordered by ascendingly by time. 
+The static `Grouper`class is the main way this application transforms data. It contains only one method: `GroupBy`. The main use case of this method is similar to a pivot table: it groups a table along a user defined dimension. The method also allows for sub-grouping each group of data. The main output is a `FlatTable` file, where each cell holds a key value pair: The key is the main data value of the group, and the value is a list of key value pairs that hold the names and values of the subgroups. When the main grouping column consists of a format parseable as `DateTime`, the rows are ordered by ascendingly by time. 
 
 **Methods and Instantiators:**
 
@@ -149,7 +170,7 @@ The static `Grouper`class is the main way this application transforms data. It c
 
 #### GroupingColumns
 
-This class acts as a mediator between the user interface and the GroupBy class. It holds the dimensions on which the user whishes to group the data as well as how he wishes to aggregate: by count, sum or average.
+This class acts as a mediator between the user interface and the GroupBy class. It holds the dimensions on which the user wishes to group the data as well as how he wishes to aggregate: by count, sum or average.
 
 **Attributes:**
 
@@ -169,13 +190,13 @@ This class acts as a mediator between the user interface and the GroupBy class. 
 
 #### Aggregation Class
 
-This class handles the aggregation of values during grouping. Based on the strategy patter, tt acts as an abstract class which is used to create different aggregation algorithms. The current aggregation functions are:
+This class handles the aggregation of values during grouping. Based on the strategy pattern, it acts as an abstract class which is used to create different aggregation algorithms. The current aggregation functions are:
 
 - Sum
 - Count
 - Average
 
-These simply take a list as an input and give an int as an output and are ommited here for brevity.
+These simply take a list as an input and give an int as an output and are omited here for brevity.
 
 ### Data display
 
@@ -185,13 +206,13 @@ The `Plotter` class is an abstract class that acts as a template for different p
 
 #### BarChart Function
 
-The `BarChart` class is resposible for plotting the data grouped by the `GroupBy` method. It requires several Unity prefabs as inputs:
+The `BarChart` class is responsible for plotting the data grouped by the `GroupBy` method. It requires several Unity prefabs as inputs:
 
-- A prefab that holts the 3-dimensional representation of a bar as well as the tiptool used to show its data value and information on the sub-groups contained in it
+- A prefab that holds the 3-dimensional representation of a bar as well as the tip tool used to show its data value and information on the sub-groups contained in it
 - A prefab that holds the text used to label a group of data
 - A prefab that holds the text used to label a dimension of data
 
-These prefabs are cloned for each data point and their size / position is then adjusted according to the value that it aims to visualise. The placing is especially complicated as the entire graph is placaeable at runtime.  The objects need to be rotated along 3 axis as well as placed in the 3-dimensional grid correctly. As such, the graph placement is done by calcuating the data points/labels position relative to the parent object using vector arithmetic. Further, sub-groupings are also added to the text that is displayed in the tip tool of each data point. 
+These prefabs are cloned for each data point and their size / position is then adjusted according to the value that it aims to visualise. The positioning is especially complicated as the entire graph is placeable at runtime.  The objects need to be rotated along 3 axes as well as placed in the 3-dimensional grid correctly. As such, the graph placement is done by calculating the data points/labels position relative to the parent object using vector arithmetic. Further, sub-groupings are also added to the text that is displayed in the tip tool of each data point. 
 
 **Methods and Instantiators:**
 
@@ -199,10 +220,10 @@ These prefabs are cloned for each data point and their size / position is then a
 | :------------- |:-------------|
 | ` public override void Plot(FlatTable input, Transform barprefab, Transform parentobject, Transform plane, List<Color32> colors, RectTransform grouplabel, RectTransform dimensionalabel)`    | Plots a three dimensional bar chart on top of a plane. Requires several unity prefabs which it the clones to create the graph: a barprefab, a grouplabel prefab and a dimensionlabel prefab. Bar colors are taken from the colors input.|
 | ` private void CreateGroupLabel(string text, Transform labelprefab, Vector3 curpos, Quaternion currot, Transform parentobject, Transform plane, Quaternion parentrotation)`    | Creates and places a group label|
-| `private void CreateDimensionLabel(string text, Transform labelprefab, Vector3 curpos, Quaternion currot, Transform parentobject, Transform plane, Quaternion parentrotation)`    | Creats and places a dimension label |
+| `private void CreateDimensionLabel(string text, Transform labelprefab, Vector3 curpos, Quaternion currot, Transform parentobject, Transform plane, Quaternion parentrotation)`    | Creates and places a dimension label |
 
 
 
 ## Final Words
 
-Thanks for reading through this entire document - or did you just skip to the end? Nonetheless I hope this was of help. If you have any questions, don't hesitate to contact me. 
+Thanks for reading through this entire document - or did you just skip to the end? Nonetheless, I hope this was of help. If you have any questions, don't hesitate to contact me. 
