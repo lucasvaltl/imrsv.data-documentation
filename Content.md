@@ -1,33 +1,93 @@
-# imrsv.data Documentation
+# imrsv.data Manuals
+
+This documentation helps you understand how to use imrsv.data to visualise data and it also helps you understand what is going on inside. 
 
 ## User Manual
 
-```c#
+The app was made to be self-explanator, however it might help to get some tips to get you started. 
 
-var test = 456;
+## Dependencies
 
-```
-### What is Lorem Ipsum?
-Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+This app is entirely dependent on the HoloToolkit  (soon to be renamed to MixedRealityToolkit-Unity) provided by Microsoft. This toolkit is constantly being updated and improved. Therefore, future changes may break the code of this application. As such, careful note needs to be taken when updating to a newer version of the HoloToolkit. 
 
-### Why do we use it?
-It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
-
-
-### Where does it come from?
-Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.
-
-The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from "de Finibus Bonorum et Malorum" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.
-
-### Where can I get some?
-There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words etc.
+The rest of the application was entirely self-written - and as such is not dependent on any other library/external code. 
 
 ## Developer Manual
 
-This is a great manual beacuse:
+This developer manual is intended at developers who want to extend the application or are just curios as to how it works. The application can be easily extended by plugging new classes into the existing infrastructure.
 
-- it is great
-- obviously
-- yes
+### App Manager
 
-# test another hedline
+The app manager class is responsible for running the application and coordinating all functions. It is the "controller" in the model-view-controller model. As such, any fundamental changes to the application will need to be done in the app manager class. 
+
+The app manager is also responsible for all things related to the user interface. It has functions that dynamically create the UI buttons from the data currently loaded. 
+
+Finally, the app manager also shows and hides different elements of the application, depending on the state of the application. 
+
+### Data Import
+The main data importation functions are parsers that take an input file from a file picker and output a FlatTable data structure which can then be used to visualise data. In order to add a new file option, an additional parser would have to be created. 
+
+Further, new data importation options could be created that stream data via an API directly into the app, which is then parsed and stored in a FlatTable instance.
+ 
+#### CSVToFlatTable
+The CSV parser is used to handle CSV data. It is based on the [CSV2Table](https://www.assetstore.unity3d.com/en/#!/content/36443) parser by Yoon ChangSik. The parser was adapted to add data into a FlatTable instance on a per column basis. The resulting FlatTable then serves as the output of the parser. 
+
+#### JSONToFlatTable
+The JSON parser is used to handle JSON data. It is based on the [JSOBObject](https://github.com/mtschoen/JSONObject/blob/master/JSONObject.cs) class by Matt Shoen (used under MIT License). The JSON parser behaves similarly to the CSV parser by adding data to a column, then adding the column to a FlatTable and finally outputting said FlatTable.
+
+### Data Storage
+
+#### Column Class
+
+Individual data is grouped is stored in a column. Each column contains the following variables.
+
+Attributes:
+
+```c#
+Type Dtype;
+List<object> ColumnData;
+Dictionary<object, List<int>> DataDistribution;
+String Name;
+Single LocalMax;
+```
+| Attribute     | Description     | 
+| :-------------: |:-------------:|
+| `Type Dtype`    | Stores the type of the data stored in the column |
+| `List<object> ColumnData`      | Stores the actual data containted in the list      | 
+| `Single LocalMax` | Stores the highest value in each column (used to facilitate scaling when plotting)     |
+
+
+Methods:
+
+```c#
+public Column(List<object> values){} 
+private void CheckAndAssignMax(object v){}
+public void Add(object o){}
+public int GetSize(){}
+override public String ToString(){}  
+```
+
+
+The column contains two lists: a list to store the actual data (`ColumnData`), and a dictionary that stores the unique values in each column together with a list of indexes (ints) that document their occurences (`DataDistribution`). This DataDistribution field is used for grouping of columns. 
+
+The column instantiator takes a list of objects as an input. This list is then used to build the column by extracting the column name out of the first item of the list, and then adding each of the following item to the `ColumnData`list as well as the `DataDistribution` list. 
+
+The column class acts as a sub-class to the FlatTable class, described below. 
+
+
+
+#### FlatTable Class
+
+
+
+### Data Transformation
+
+#### GroupBy function
+
+#### Aggregation functions
+
+### Data display
+
+#### Plotter Function
+
+#### BarChart Function
