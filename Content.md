@@ -2,19 +2,59 @@
 
 This documentation helps you understand how to use imrsv.data to visualise data and it also helps you understand what is going on inside. 
 
+imrsv.data was built from the start to allow the anyone to visualise data in 3-dimensions. As such, we hope that it helps you understand and find patterns in your data. 
+
 ## User Manual
 
-The app was made to be self-explanator, however it might help to get some tips to get you started. 
+The app was made to be self-explanatory, however here are some tips to get you started.
+
+**Important:** The app is only useable if you have a filepicker installed on your Hololens. [OneDrive](https://www.microsoft.com/en-gb/store/p/onedrive/9wzdncrfj1p3?wa=wsignin1.0) is a great choice.
+
+### Application Start
+The application welcomes you with a screen that prompts you to load a file. Upon pressing the load file button, the app will switch to the file picker installed on your device. Choose the file you want to load and press "open".
+
+### Placing The Graph
+
+As soon as you select a file you will be able to place the graph anywhere in the room. The graph will then appear at that exact location
+
+### Data Manipulation
+
+You can now manipulate the dimensions being displayed using the UI that was created based on the headers of the data you loaded. The UI is made of three main sections:
+
+- The leftmost section controls how your data is grouped. The data will be grouped along this dimension - think of it like the x axis of your graph.
+- The middle section allows you to add a sub-grouping category. Each group created will be sub-grouped using this dimension. Sub-groups are displayed as tip-tools when gazing at a data point. 
+- The rightmost seciton allows you to select the dimensions that are displayed. You can chose which dimensions are displayed and how they are aggregated by clicking the `Count`, `Sum` and `Avg` buttons. Pressing any button visualises the corresponding dimension, and pressing it again deletes said dimension from the visualisation. 
+
+Use these buttons to change how and which data is being displayed - then walk around the graph to see it from different angles. This will hopefully allow you to understand the data better and find new patterns between different dimensions.
+
+### Changing The Data Loaded
+
+To change the data you are visualising, just press the `Load Data` button at the top of the UI panel. The app will switch to your file picker and you can select a different data set tio visualise. 
+
+
+## Deployment Manual
+
+### Application Building / Deployment
+
+At the time of writing, the application is not yet available in the Windows App Store. Therefore, the application needs to be built and deployed on the Hololens device manually. The following steps need to be followed:
+
+1. First the Unity project needs to be loaded using Unity. The Unity version used for this proejct was [Unity 2017.1f3]()
+2. Then the application needs to be built and deployed to the device. Just follow the steps outlined [here](https://developer.microsoft.com/en-us/windows/mixed-reality/holograms_100#compile_the_visual_studio_solution). Make sure Unity is set up correctly as detailed by the guide.
+ 
 
 ## Dependencies
 
-This app is entirely dependent on the HoloToolkit  (soon to be renamed to MixedRealityToolkit-Unity) provided by Microsoft. This toolkit is constantly being updated and improved. Therefore, future changes may break the code of this application. As such, careful note needs to be taken when updating to a newer version of the HoloToolkit. 
+This app is dependent on the HoloToolkit  (soon to be renamed to MixedRealityToolkit-Unity) provided by Microsoft. This toolkit is constantly being updated and improved. Therefore, future changes may break this application. As such, careful note needs to be taken when updating to a newer version of the HoloToolkit. The version of the toolkit used for this project is `v1.2017.1.0`. The newest version can be found [here](https://github.com/Microsoft/MixedRealityToolkit-Unity/releases). 
+
+Other dependencies include:
+- The JSON parser is based on the [JSOBObject](https://github.com/mtschoen/JSONObject/blob/master/JSONObject.cs) class by Matt Shoen
+- The CSV parser is based on the [CSV2Table](https://www.assetstore.unity3d.com/en/#!/content/36443) parser by Yoon ChangSik
 
 The rest of the application was entirely self-written - and as such is not dependent on any other library/external code. 
 
-## Developer Manual
+## Documentation
 
-This developer manual is intended at developers who want to extend the application or are just curios as to how it works. The application can be easily extended by plugging new classes into the existing infrastructure.
+This documentation is intended at developers who want to extend the application or are just curios as to how it works. The application can be easily extended by plugging new classes into the existing infrastructure in order to extend the apps functionalities. 
 
 ### App Manager
 
@@ -95,12 +135,74 @@ The FlatTable is the main data storage facility in this application. It acts as 
 
 ### Data Transformation
 
-#### GroupBy function
 
-#### Aggregation functions
+#### Grouper Class
+The static `Grouper`class is the main way this application transforms data. It contains only one method: `GroupBy`. The main usecase of this method is similar to a pivot table: it groups a table along a user defined dimension. The method also allows for sub-grouping each group of data. The main output is a `FlatTable` file, where each cell holds a key value pair: The key is the main data value of the group, and the value is a list of key value pairs that hold the names and values of the subgroups. When the main grouping column consists of a format parseable as `DateTime`, the rows are ordered by ascendingly by time. 
+
+**Methods and Instantiators:**
+
+| Method    | Description     | 
+| :------------- |:-------------|
+| `public static FlatTable GroupBy(GroupingColumns grpcol, FlatTable input)`    | This method takes a grouping column instance (which holds the grouping dimensions) as an input and outputs a FlatTable|
+| `private static List<KeyValuePair<object, float>> SecondaryGrouping(AggregateFunction aggfunc, List<int> uniqeindexesprim, Dictionary<object, List<int>> datadistributionsecgrouping, Column currentcol)`    | Performs the secondary grouping of the data, based on the primary grouping|
+
+
+#### GroupingColumns
+
+This class acts as a mediator between the user interface and the GroupBy class. It holds the dimensions on which the user whishes to group the data as well as how he wishes to aggregate: by count, sum or average.
+
+**Attributes:**
+
+| Attribute     | Description     | 
+| :------------- |:-------------|
+| `string PrimaryGrouping;`    | Primary grouping column |
+| `string SecGrouping`      | Secondary grouping column      | 
+| `List<KeyValuePair<string, string>> SelectedColumns` | Stores the  columns to be displayed (key) along with information on how each column is to be aggregated (value)|
+
+**Methods and Instantiators:**
+
+| Method    | Description     | 
+| :------------- |:-------------|
+| ` public GroupingColumns(string prim, string sec, List<KeyValuePair<string, string>> selcols)`    | Instantiator|
+| ` public string ColumIsSelected(string input)`    | Used to check if a specific column is selected - returns null if false |
+| ` public void RemoveSelectedCol(string input)`    | Removes a column from the selection |
+
+#### Aggregation Class
+
+This class handles the aggregation of values during grouping. Based on the strategy patter, tt acts as an abstract class which is used to create different aggregation algorithms. The current aggregation functions are:
+
+- Sum
+- Count
+- Average
+
+These simply take a list as an input and give an int as an output and are ommited here for brevity.
 
 ### Data display
 
-#### Plotter Function
+#### Plotter Class
+
+The `Plotter` class is an abstract class that acts as a template for different plotting implementations. 
 
 #### BarChart Function
+
+The `BarChart` class is resposible for plotting the data grouped by the `GroupBy` method. It requires several Unity prefabs as inputs:
+
+- A prefab that holts the 3-dimensional representation of a bar as well as the tiptool used to show its data value and information on the sub-groups contained in it
+- A prefab that holds the text used to label a group of data
+- A prefab that holds the text used to label a dimension of data
+
+These prefabs are cloned for each data point and their size / position is then adjusted according to the value that it aims to visualise. The placing is especially complicated as the entire graph is placaeable at runtime.  The objects need to be rotated along 3 axis as well as placed in the 3-dimensional grid correctly. As such, the graph placement is done by calcuating the data points/labels position relative to the parent object using vector arithmetic. Further, sub-groupings are also added to the text that is displayed in the tip tool of each data point. 
+
+**Methods and Instantiators:**
+
+| Method    | Description     | 
+| :------------- |:-------------|
+| ` public override void Plot(FlatTable input, Transform barprefab, Transform parentobject, Transform plane, List<Color32> colors, RectTransform grouplabel, RectTransform dimensionalabel)`    | Plots a three dimensional bar chart on top of a plane. Requires several unity prefabs which it the clones to create the graph: a barprefab, a grouplabel prefab and a dimensionlabel prefab. Bar colors are taken from the colors input.|
+| ` private void CreateGroupLabel(string text, Transform labelprefab, Vector3 curpos, Quaternion currot, Transform parentobject, Transform plane, Quaternion parentrotation)`    | Creates and places a group label|
+| `private void CreateDimensionLabel(string text, Transform labelprefab, Vector3 curpos, Quaternion currot, Transform parentobject, Transform plane, Quaternion parentrotation)`    | Creats and places a dimension label |
+
+
+
+## Final Words
+
+Thanks for reading through this entire document - or did you just skip to the end? Nonetheless I hope this was of help. If you have any questions, don't hesitate to contact me. 
