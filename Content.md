@@ -111,7 +111,7 @@ The CSV parser is used to handle CSV data. It is based on the [CSV2Table](https:
 
 
 #### JSONToFlatTable Class
-The JSON parser is used to handle JSON data. It is based on the [JSOBObject](https://github.com/mtschoen/JSONObject/blob/master/JSONObject.cs) class by Matt Shoen (used under MIT License). The JSON parser behaves similarly to the CSV parser by adding data to a column, adding each column to a FlatTable and finally outputting said FlatTable.
+The JSON parser is used to handle JSON data. It is based on the [JSONBObject](https://github.com/mtschoen/JSONObject/blob/master/JSONObject.cs) class by Matt Shoen (used under MIT License). The JSON parser behaves similarly to the CSV parser by adding data to a column, adding each column to a FlatTable and finally outputting said FlatTable.
 
 **Methods:**
 
