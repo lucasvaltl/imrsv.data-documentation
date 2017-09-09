@@ -8,7 +8,12 @@ imrsv.data was built from the start to allow the anyone to visualise data in 3-d
 
 The app was made to be self-explanatory, however here are some tips to get you started.
 
+<aside class="warning">
+ 
 **Important:** The app is only useable if you have a filepicker installed on your Hololens. [OneDrive](https://www.microsoft.com/en-gb/store/p/onedrive/9wzdncrfj1p3?wa=wsignin1.0) is a great choice.
+
+</aside>
+
 
 ### Accepted File Formats
 
