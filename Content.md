@@ -87,7 +87,7 @@ The rest of the application was entirely self-written - and as such is not depen
 
 ## Documentation
 
-This documentation is intended dor developers who want to extend the application or are just curious as to how it works. The application can be easily extended by plugging new classes into the existing infrastructure in order to extend the app's functionalities. 
+This documentation is intended for developers who want to extend the application or are just curious as to how it works. The application can be easily extended by plugging new classes into the existing infrastructure in order to extend the app's functionalities. 
 
 ### App Manager
 
