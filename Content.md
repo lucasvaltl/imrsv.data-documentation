@@ -68,8 +68,8 @@ At the time of writing, the application is not yet available in the Windows App 
 
 In order to build the app and run it on the Hololens, the following steps need to be followed:
 
-1. First, the Unity project needs to be loaded using Unity. The Unity version used for this project was [Unity 2017.1p5](https://unity3d.com/unity/qa/patch-releases/2017.1.0p5). Open the project using the "open project" function in Unity and navigate to the folder where it is stored. 
-2. Then the application needs to be built and deployed to the device. Just follow the steps outlined [here](https://developer.microsoft.com/en-us/windows/mixed-reality/holograms_100#compile_the_visual_studio_solution). Make sure Unity is set up correctly as detailed by the guide.
+1. First, the Unity project needs to be loaded using Unity. The Unity version used for this project was [Unity 2017.1p5](https://unity3d.com/unity/qa/patch-releases/2017.1.0p5). Open the project using the "open project" function in Unity and navigate to the folder where it is stored. Once opened, you need to open the aplication's unity scene. Navigate to the Scenes folder in the unity project window and double click the imrsv.data scene.
+2. Now the application needs to be built and deployed to the device. Just follow the steps outlined [here](https://developer.microsoft.com/en-us/windows/mixed-reality/holograms_100#compile_the_visual_studio_solution).
  
 
 ## Dependencies
